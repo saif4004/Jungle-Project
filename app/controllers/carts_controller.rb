@@ -1,6 +1,9 @@
 class CartsController < ApplicationController
 
   def show
+    if cart.empty? 
+      redirect_to root_path, alert: 'Your cart is empty'
+    end
   end
 
   def add_item
