@@ -5,7 +5,15 @@
   </header>
 
   <div class="order-summary jumbotron">
-    <h4>Thank you for your order!</h4>
+    <% @order.line_items.each do |line_item| %>
+  <div class="line-item">
+    <h3><%= line_item.product.name %></h3>
+    <p><%= line_item.product.description %></p>
+    <img src="<%= line_item.product.image_url %>" alt="<%= line_item.product.name %>" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+    <p>Quantity: <%= line_item.quantity %></p>
+    <p>Line Item Total: <%= number_to_currency(line_item.total_price_cents / 100.0, precision: 2) %></p>
+  </div>
+<% end %>
   </div>
 
   <%= link_to "Continue Shopping", root_path, class: 'btn btn-lg btn-primary' %>
