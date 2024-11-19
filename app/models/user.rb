@@ -1,19 +1,24 @@
 class User < ApplicationRecord
   has_secure_password
-end
-  def new
-  end
-  def create
-    user = User.new(user_params)
-    if user.save
-      session[:user_id] = user.id
-      redirect_to '/'
-    else
-      redirect_to '/signup'
-    end
-end
 
-private
-def user_params 
-  params.require(:user).permit(:name, :email, :password, :password_confirmation)
+
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
+  validates :password, presence: true, length: { minimum: 6 }
+
+  before_save :downcase_email
+
+  def self.authenticate_with_credentials(email, password)
+    user = User.find_by(email: email.downcase.strip)
+    if user && user.authenticate(password)
+      user
+    else
+      nil
+    end
+  end
+  private
+
+  def downcase_email
+    self.email = email.downcase
+  end
 end
